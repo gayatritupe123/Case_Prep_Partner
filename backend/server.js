@@ -15,7 +15,7 @@ const userRoutes = require("./routes/userRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 
 const userRoutes = require("./routes/userRoutes");
-const notificationRoutes = require("./routes/notificationRoutes");
+
 
 
 const app = express();
@@ -35,7 +35,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 app.use("/api/users", userRoutes);
-app.use("/api/notifications", notificationRoutes);
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
