@@ -12,7 +12,7 @@ const userRoutes = require("./routes/userRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
-app.use(cors({ origin: "*" })); // temporary, we'll restrict this once frontend is live
+app.use(cors({ origin: "https://case-prep-partner.vercel.app/" })); 
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
