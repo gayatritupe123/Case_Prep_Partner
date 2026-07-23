@@ -8,15 +8,8 @@ const caseRoutes = require("./routes/caseRoutes");
 const invitationRoutes = require("./routes/invitationRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
-
 const userRoutes = require("./routes/userRoutes");
-
-
 const notificationRoutes = require("./routes/notificationRoutes");
-
-const userRoutes = require("./routes/userRoutes");
-
-
 
 const app = express();
 app.use(cors());
@@ -24,18 +17,11 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/cases", caseRoutes);
-   
 app.use("/api/invitations", invitationRoutes);
 app.use("/api/sessions", sessionRoutes);
-
 app.use("/api/feedback", feedbackRoutes);
-
 app.use("/api/users", userRoutes);
-
 app.use("/api/notifications", notificationRoutes);
-
-app.use("/api/users", userRoutes);
-
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
