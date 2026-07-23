@@ -1,0 +1,280 @@
+/* ============================================
+   CasePrepPartner — Design System
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --ink: #16213E;
+  --ink-soft: #47526B;
+  --gold: #C9971F;
+  --gold-soft: #F4E3BC;
+  --green: #2F7A4F;
+  --red: #B3432B;
+  --bg: #F5F6F8;
+  --surface: #FFFFFF;
+  --border: #E3E6EC;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(22, 33, 62, 0.06), 0 4px 16px rgba(22, 33, 62, 0.06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.1rem; font-weight: 500; color: var(--ink-soft); }
+
+p { margin: 0 0 1rem 0; }
+
+a { color: var(--ink); text-decoration: none; }
+
+/* ---------- Layout ---------- */
+
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.navbar {
+  background: var(--ink);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.navbar-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.brand span { color: var(--gold); }
+
+.nav-links {
+  display: flex;
+  gap: 1.75rem;
+}
+
+.nav-links a {
+  color: #C7CCDB;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.nav-links a:hover { color: #fff; }
+
+/* ---------- Cards ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.card + .card { margin-top: 1rem; }
+
+.card-link {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.card-link:hover {
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.card-link h3 {
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.02rem;
+  margin-bottom: 0.35rem;
+}
+
+/* ---------- Tags / badges ---------- */
+
+.tag-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.6rem;
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+}
+
+.tag-easy { background: #E7F4EC; color: var(--green); border-color: #CFE9D8; }
+.tag-medium { background: var(--gold-soft); color: #8A6510; border-color: #E9D298; }
+.tag-hard { background: #F6E2DC; color: var(--red); border-color: #EFC7BA; }
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--ink);
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.7rem;
+  border-radius: 100px;
+}
+
+.badge-pill::before {
+  content: "\2726";
+  font-size: 0.8rem;
+}
+
+/* ---------- Forms ---------- */
+
+.form-wrap {
+  max-width: 380px;
+  margin: 3rem auto;
+}
+
+label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 0.35rem;
+  margin-top: 1rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+}
+
+select { width: auto; }
+
+/* ---------- Buttons ---------- */
+
+button, .btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--ink);
+  color: #fff;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+button:hover { background: #232F52; }
+button:active { transform: scale(0.98); }
+
+button.secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+
+button.secondary:hover { background: var(--bg); }
+
+button.full { width: 100%; margin-top: 1.5rem; }
+
+/* ---------- Misc ---------- */
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.subtle {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+}
+
+.stat-row {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.stat-block .stat-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.stat-block .stat-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--ink-soft);
+}
