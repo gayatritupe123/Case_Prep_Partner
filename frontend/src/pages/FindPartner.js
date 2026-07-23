@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api";
+import { Link } from "react-router-dom";
 
 export default function FindPartner() {
   const [tab, setTab] = useState("browse"); // "browse" | "post"
@@ -98,7 +99,7 @@ export default function FindPartner() {
                   <Link to={`/profile/${inv.createdBy._id}`}>
                    <h3 style={{ color: "var(--ink)", marginBottom: "0.25rem" }}>{inv.createdBy.name}</h3>
                   </Link>
-                  
+
                   <div className="tag-row" style={{ marginBottom: "0.5rem" }}>
                     <span className="tag">{inv.createdBy.badge}</span>
                     <span className="tag">Rating: {inv.createdBy.rating} / 5</span>
