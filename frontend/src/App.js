@@ -9,6 +9,8 @@ import CaseDetail from "./pages/CaseDetail";
 import FindPartner from "./pages/FindPartner";
 import MySessions from "./pages/MySessions";
 import NotificationBell from "./components/NotificationBell";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
@@ -32,14 +34,15 @@ function App() {
 
       <div className="page">
         <Routes>
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/:id" element={<ViewProfile />} />
-          <Route path="/cases" element={<CaseLibrary />} />
-          <Route path="/cases/:id" element={<CaseDetail />} />
-          <Route path="/find-partner" element={<FindPartner />} />
-          <Route path="/sessions" element={<MySessions />} />
+        <Route path="/" element={<Navigate to="/cases" />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/profile/:id" element={<ProtectedRoute><ViewProfile /></ProtectedRoute>} />
+        <Route path="/cases" element={<ProtectedRoute><CaseLibrary /></ProtectedRoute>} />
+        <Route path="/cases/:id" element={<ProtectedRoute><CaseDetail /></ProtectedRoute>} />
+        <Route path="/find-partner" element={<ProtectedRoute><FindPartner /></ProtectedRoute>} />
+        <Route path="/sessions" element={<ProtectedRoute><MySessions /></ProtectedRoute>} />
         </Routes>
       </div>
     </BrowserRouter>
