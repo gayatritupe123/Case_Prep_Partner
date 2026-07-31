@@ -42,16 +42,24 @@ export default function MySessions() {
     }
   };
 
+  // only show sessions that are upcoming (current date/time or later) OR already completed
+  const now = new Date();
+  const visibleSessions = sessions.filter((s) => {
+    if (s.status === "completed") return true;
+    const sessionDateTime = new Date(`${s.scheduledDate}T${s.scheduledTime}`);
+    return sessionDateTime >= now;
+  });
+
   return (
     <div>
       <h2>My Sessions</h2>
       <p className="subtle">Your confirmed practice sessions. Join the call at the scheduled time.</p>
 
-      {sessions.length === 0 && (
-        <div className="empty-state">No sessions yet. Head to Find Partner to set one up.</div>
+      {visibleSessions.length === 0 && (
+        <div className="empty-state">No upcoming sessions yet. Head to Find Partner to set one up.</div>
       )}
 
-      {sessions.map((s) => {
+      {visibleSessions.map((s) => {
         const alreadyGiven = givenFeedback.includes(s._id);
 
         return (
@@ -60,9 +68,8 @@ export default function MySessions() {
               <span className="tag">{s.status}</span>
             </div>
             <Link to={`/profile/${s.userA._id === myUser.id ? s.userB._id : s.userA._id}`}>
-             <h3 style={{ color: "var(--ink)" }}>Practice with {partnerName(s)}</h3>
+              <h3 style={{ color: "var(--ink)" }}>Practice with {partnerName(s)}</h3>
             </Link>
-            
             <p>
               <strong>{s.scheduledDate}</strong> at <strong>{s.scheduledTime}</strong> &middot; 45 min
             </p>

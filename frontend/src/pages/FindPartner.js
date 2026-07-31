@@ -62,6 +62,7 @@ export default function FindPartner() {
             <label>Available Date</label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]}
               value={form.availableDate}
               onChange={(e) => setForm({ ...form, availableDate: e.target.value })}
               required

@@ -1,24 +1,32 @@
 const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 const Invitation = require("../models/Invitation");
 const Session = require("../models/Session");
-const CaseModel = require("../models/Case");
-const auth = require("../middleware/auth");
-
+const Case = require("../models/Case");
 const Notification = require("../models/Notification");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// POST a new invitation (upload your available slot)
+// POST a new invitation
 router.post("/", auth, async (req, res) => {
   try {
-    const { availableDate, availableTime } = req.body;
-    if (!availableDate || !availableTime) {
-      return res.status(400).json({ msg: "Date and time are required" });
+    const { availableDate, availableTime, note } = req.body;
+
+    // block past date/time
+    const proposedDateTime = new Date(`${availableDate}T${availableTime}`);
+    if (isNaN(proposedDateTime.getTime())) {
+      return res.status(400).json({ msg: "Invalid date or time" });
     }
+    if (proposedDateTime < new Date()) {
+      return res.status(400).json({ msg: "You can only schedule sessions for the current date/time or later" });
+    }
+
     const invitation = await Invitation.create({
       createdBy: req.user.id,
       availableDate,
       availableTime,
+      note,
     });
     res.json(invitation);
   } catch (err) {
@@ -26,75 +34,76 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// GET all OPEN invitations (excluding your own) - the browse list
+// GET all OPEN invitations (excluding ones created by the logged-in user, and excluding past ones)
 router.get("/", auth, async (req, res) => {
   try {
     const invitations = await Invitation.find({
       status: "open",
       createdBy: { $ne: req.user.id },
     })
-      .populate("createdBy", "name badge rating")
-      .sort({ availableDate: 1, availableTime: 1 });
-    res.json(invitations);
+      .populate("createdBy", "name badge rating casesSolved")
+      .sort({ createdAt: -1 });
+
+    // filter out invitations whose date/time has already passed
+    const now = new Date();
+    const upcoming = invitations.filter((inv) => {
+      const dt = new Date(`${inv.availableDate}T${inv.availableTime}`);
+      return dt >= now;
+    });
+
+    res.json(upcoming);
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 });
 
-// GET my own posted invitations (to see if anyone accepted yet)
+// GET invitations I created (to track their status)
 router.get("/mine", auth, async (req, res) => {
   try {
-    const invitations = await Invitation.find({ createdBy: req.user.id })
-      .populate("acceptedBy", "name badge rating")
-      .sort({ createdAt: -1 });
+    const invitations = await Invitation.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
     res.json(invitations);
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
 });
 
-// ACCEPT an invitation -> creates a Session with meet link + 2 suggested cases
+// ACCEPT an invitation -> creates a Session with a Jitsi link + 2 random suggested cases
 router.post("/:id/accept", auth, async (req, res) => {
   try {
     const invitation = await Invitation.findById(req.params.id);
     if (!invitation) return res.status(404).json({ msg: "Invitation not found" });
     if (invitation.status !== "open") return res.status(400).json({ msg: "Invitation already accepted" });
     if (invitation.createdBy.toString() === req.user.id) {
-      return res.status(400).json({ msg: "You can't accept your own invitation" });
+      return res.status(400).json({ msg: "You cannot accept your own invitation" });
     }
 
     invitation.status = "accepted";
     invitation.acceptedBy = req.user.id;
     await invitation.save();
 
-    // Generate a unique Jitsi meet link
-    const roomId = `casepreppartner-${invitation._id}-${Date.now()}`;
-    const meetLink = `https://meet.jit.si/${roomId}`;
+    // pick 2 random cases to suggest
+    const randomCases = await Case.aggregate([{ $sample: { size: 2 } }]);
 
-    // Pick 2 random cases to suggest
-    const suggestedCases = await CaseModel.aggregate([{ $sample: { size: 2 } }]);
+    const roomId = uuidv4().slice(0, 8);
+    const meetLink = `https://meet.jit.si/casepreppartner-${roomId}`;
 
     const session = await Session.create({
       invitationId: invitation._id,
       userA: invitation.createdBy,
       userB: invitation.acceptedBy,
       meetLink,
-      suggestedCases: suggestedCases.map((c) => c._id),
+      suggestedCases: randomCases.map((c) => c._id),
       scheduledDate: invitation.availableDate,
       scheduledTime: invitation.availableTime,
     });
+
     await Notification.create({
-       userId: invitation.createdBy,
-       message: `Your invitation was accepted! Session scheduled for ${invitation.availableDate} at ${invitation.availableTime}.`,
-       link: "/sessions",
+      userId: invitation.createdBy,
+      message: `Your invitation was accepted! Session scheduled for ${invitation.availableDate} at ${invitation.availableTime}.`,
+      link: "/sessions",
     });
 
-    const populated = await Session.findById(session._id)
-      .populate("userA", "name badge")
-      .populate("userB", "name badge")
-      .populate("suggestedCases", "title difficulty topic");
-
-    res.json(populated);
+    res.json(session);
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
