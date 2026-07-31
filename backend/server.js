@@ -12,7 +12,8 @@ const userRoutes = require("./routes/userRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
-app.use(cors({ origin: "https://case-prep-partner.vercel.app/" })); 
+
+app.use(cors({ origin: "https://case-prep-partner.vercel.app" }));
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
